@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hy.ss.shopsmartandroid"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="18"
+        android:targetSdkVersion="18" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.hy.ss.activities.SSMainListActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.hy.ss.activities.pub.SSPublicListActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.SSPrivateListActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.maphierarchy.SSMapHierarchyActivility" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.TestActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.offlinemap.TestOfflineMapActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.ActivityFinderActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.SetPrimitiveBeaconActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.PrivateLocationActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.ConfigureBeaconActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.MapViewActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.ShowPrimitiveBeaconActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.SetMarketRegionActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.PrivateTracingActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.ResettingActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.ShowConfiguredBeacons" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.SetCurrentPlaceActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.ShowMarketRegionActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.ShowTracingActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.maphierarchy.SSCityMarketListActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.maphierarchy.SSMarketMapActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.TracingListActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.pri.SettingActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.ibeacon.TestBeaconActivity" >
+        </activity>
+
+        <service android:name="com.estimote.sdk.service.BackgroundBeaconService" >
+        </service>
+        <service android:name="com.estimote.sdk.service.BeaconService" >
+        </service>
+
+        <activity android:name="com.hy.ss.activities.find.SSShopListActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.find.SSFindShopActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.find.SSFindCarActivity" >
+        </activity>
+        <activity android:name="com.hy.ss.activities.find.SSFindFacilityActivity" >
+        </activity>
+    </application>
+
+</manifest>
