@@ -29,6 +29,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.estimote.sdk.Beacon;
+import com.estimote.sdk.PMovingAverageTD;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
 import com.estimote.sdk.internal.Preconditions;
@@ -59,6 +60,8 @@ public class BeaconService extends Service {
 	private final Messenger messenger;
 	private final BluetoothAdapter.LeScanCallback leScanCallback;
 	private final ConcurrentHashMap<Beacon, Long> beaconsFoundInScanCycle;
+	private final ConcurrentHashMap<Beacon, PMovingAverageTD> beaconAverageRssi;
+
 	private final List<RangingRegion> rangedRegions;
 	private final List<MonitoringRegion> monitoredRegions;
 	private BluetoothAdapter adapter;
@@ -82,6 +85,7 @@ public class BeaconService extends Service {
 		this.leScanCallback = new InternalLeScanCallback();
 
 		this.beaconsFoundInScanCycle = new ConcurrentHashMap<Beacon, Long>();
+		this.beaconAverageRssi = new ConcurrentHashMap<Beacon, PMovingAverageTD>();
 
 		this.rangedRegions = new ArrayList<RangingRegion>();
 
@@ -175,6 +179,7 @@ public class BeaconService extends Service {
 			removeAfterScanCycleCallback();
 			stopScanning();
 			this.beaconsFoundInScanCycle.clear();
+			this.beaconAverageRssi.clear();
 		}
 	}
 
@@ -202,6 +207,7 @@ public class BeaconService extends Service {
 			removeAfterScanCycleCallback();
 			stopScanning();
 			this.beaconsFoundInScanCycle.clear();
+			this.beaconAverageRssi.clear();
 		}
 	}
 
@@ -296,6 +302,7 @@ public class BeaconService extends Service {
 								BeaconService.this.stopScanning();
 								BeaconService.this.beaconsFoundInScanCycle
 										.clear();
+								BeaconService.this.beaconAverageRssi.clear();
 							}
 
 						});
@@ -370,8 +377,23 @@ public class BeaconService extends Service {
 				Log.d(TAG, "Device " + device + " is not an Estimote beacon");
 				return;
 			}
+
+			if (!BeaconService.this.beaconAverageRssi.contains(beacon)) {
+				BeaconService.this.beaconAverageRssi.put(beacon,
+						new PMovingAverageTD(2.0));
+			}
+			BeaconService.this.beaconAverageRssi.get(beacon).push(
+					System.currentTimeMillis(), rssi);
+
 			BeaconService.this.beaconsFoundInScanCycle.put(beacon,
 					Long.valueOf(System.currentTimeMillis()));
+			// // Log.i(TAG, "========================");
+			// // Log.i(TAG, "found beacon: "
+			// // + BeaconService.this.beaconsFoundInScanCycle.size());
+			// for (Beacon b :
+			// BeaconService.this.beaconsFoundInScanCycle.keySet()) {
+			// Log.i(TAG, b.getMacAddress());
+			// }
 		}
 
 	}
@@ -441,8 +463,9 @@ public class BeaconService extends Service {
 
 		private void processRanging() {
 			for (RangingRegion rangedRegion : BeaconService.this.rangedRegions)
-				rangedRegion
-						.processFoundBeacons(BeaconService.this.beaconsFoundInScanCycle);
+				rangedRegion.processFoundBeacons(
+						BeaconService.this.beaconsFoundInScanCycle,
+						BeaconService.this.beaconAverageRssi);
 		}
 
 		private List<MonitoringRegion> findEnteredRegions(long currentTimeMillis) {
@@ -451,8 +474,9 @@ public class BeaconService extends Service {
 					.entrySet()) {
 				for (MonitoringRegion monitoringRegion : matchingMonitoredRegions((Beacon) entry
 						.getKey())) {
-					monitoringRegion
-							.processFoundBeacons(BeaconService.this.beaconsFoundInScanCycle);
+					monitoringRegion.processFoundBeacons(
+							BeaconService.this.beaconsFoundInScanCycle,
+							BeaconService.this.beaconAverageRssi);
 					if (monitoringRegion.markAsSeen(currentTimeMillis)) {
 						didEnterRegions.add(monitoringRegion);
 					}
@@ -536,6 +560,7 @@ public class BeaconService extends Service {
 			List<MonitoringRegion> exitedRegions = findExitedRegions(now);
 			removeNotSeenBeacons(now);
 			BeaconService.this.beaconsFoundInScanCycle.clear();
+			BeaconService.this.beaconAverageRssi.clear();
 			invokeCallbacks(enteredRegions, exitedRegions);
 			if (BeaconService.this.scanWaitTimeMillis() == 0L)
 				BeaconService.this.startScanning();

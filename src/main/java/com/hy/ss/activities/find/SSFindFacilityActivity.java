@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -194,4 +196,18 @@ public class SSFindFacilityActivity extends Activity {
 			facilityGraphicsLayer.addGraphic(new Graphic(p, null));
 		}
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, 0, 0, "Test");
+
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		return super.onOptionsItemSelected(item);
+	}
+
 }

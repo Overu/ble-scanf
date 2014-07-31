@@ -53,8 +53,8 @@ public class SSFindCarActivity extends Activity implements OnClickListener,
 		RangingListener {
 	private static final String TAG = (SSFindCarActivity.class.getSimpleName());
 
-	private static final String HINT_FOR_MARKING = "标记当前位置，便于稍侯找到您的爱车。";
-	private static final String HINT_FOR_DATE = "日期：";
+	private static final String HINT_FOR_MARKING = "������������������������������������������������������";
+	private static final String HINT_FOR_DATE = "���������";
 
 	private TextView tvMarket;
 	private Button btnMarkLocation;
@@ -80,8 +80,12 @@ public class SSFindCarActivity extends Activity implements OnClickListener,
 
 	private GraphicsLayer hintGraphicsLayer;
 	private GraphicsLayer carLocationGraphicsLayer;
+	// private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region(
+	// "ShopSmart", "74278BDA-B644-4520-8F0C-720EAF059935", 2, null);
+
 	private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region(
-			"ShopSmart", "74278BDA-B644-4520-8F0C-720EAF059935", 2, null);
+			"ShopSmart", "94171fa9-234c-4cf1-87da-4a9ba674561d", 2, null);
+
 	private static final int REQUEST_ENABLE_BT = 1234;
 
 	private BeaconManager beaconManager;
@@ -282,8 +286,9 @@ public class SSFindCarActivity extends Activity implements OnClickListener,
 
 	private void markCarLocation() {
 		if (currentLocation == null) {
-			Toast.makeText(getBaseContext(), "抱赚，当前无法获取您的位置", Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(getBaseContext(),
+					"���������������������������������������",
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -328,12 +333,12 @@ public class SSFindCarActivity extends Activity implements OnClickListener,
 			String t1 = format.format(d1);
 
 			String str = currentMarket.getName() + "-"
-					+ currentMapInfo.getFloorString() + "\n日期：" + t1;
+					+ currentMapInfo.getFloorString() + "\n���������" + t1;
 			tvMarket.setText(str);
-			btnMarkLocation.setText("取消标记");
+			btnMarkLocation.setText("������������");
 		} else {
 			tvMarket.setText(HINT_FOR_MARKING);
-			btnMarkLocation.setText("标记车位");
+			btnMarkLocation.setText("������������");
 		}
 	}
 
@@ -416,11 +421,15 @@ public class SSFindCarActivity extends Activity implements OnClickListener,
 		}
 		scannedBeacons.clear();
 
+		Log.i(TAG, "onBeaconsDiscovered");
+
 		for (int i = 0; i < beacons.size(); ++i) {
 			Beacon b = beacons.get(i);
 			if (b.getRssi() < 0) {
 				scannedBeacons.add(b);
 			}
+
+			Log.i(TAG, "Minor: " + b.getMinor() + " - " + b.getRssi());
 		}
 
 		List<Beacon> toRemove = new ArrayList<Beacon>();

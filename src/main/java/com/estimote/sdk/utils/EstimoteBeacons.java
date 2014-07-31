@@ -3,7 +3,7 @@ package com.estimote.sdk.utils;
 import com.estimote.sdk.Beacon;
 
 public class EstimoteBeacons {
-	public static final String ESTIMOTE_PROXIMITY_UUID = "74278bda-b644-4520-8f0c-720eaf059935";
+	public static final String ESTIMOTE_PROXIMITY_UUID = "94171fa9-234c-4cf1-87da-4a9ba674561d";
 	public static final String ESTIMOTE_MAC_PROXIMITY_UUID = "08D4A950-80F0-4D42-A14B-D53E063516E6";
 	public static final String ESTIMOTE_IOS_PROXIMITY_UUID = "8492E75F-4FD6-469D-B132-043FE94921D8";
 
