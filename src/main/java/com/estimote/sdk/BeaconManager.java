@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
@@ -98,7 +99,7 @@ public class BeaconManager {
 			callback.onServiceReady();
 		}
 		boolean bound = this.context.bindService(new Intent(this.context,
-				BeaconService.class), this.serviceConnection, 1);
+				BeaconService.class), this.serviceConnection, Service.BIND_AUTO_CREATE);
 
 		if (!bound)
 			Log.w(TAG,

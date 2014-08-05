@@ -41,7 +41,7 @@ class RangingRegion {
 	}
 
 	public final Collection<Beacon> getSortedBeacons() {
-		ArrayList<Beacon> sortedBeacons = new ArrayList<Beacon>(
+    ArrayList<Beacon> sortedBeacons = new ArrayList<Beacon>(
 				this.beacons.keySet());
 		Collections.sort(sortedBeacons, BEACON_ACCURACY_COMPARATOR);
 
