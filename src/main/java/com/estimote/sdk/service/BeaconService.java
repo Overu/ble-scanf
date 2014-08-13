@@ -28,10 +28,7 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.estimote.sdk.Beacon;
-import com.estimote.sdk.PMovingAverageTD;
-import com.estimote.sdk.Region;
-import com.estimote.sdk.Utils;
+import com.estimote.sdk.*;
 import com.estimote.sdk.internal.Preconditions;
 import com.estimote.sdk.utils.EstimoteBeacons;
 
@@ -60,7 +57,7 @@ public class BeaconService extends Service {
 	private final Messenger messenger;
 	private final BluetoothAdapter.LeScanCallback leScanCallback;
 	private final ConcurrentHashMap<Beacon, Long> beaconsFoundInScanCycle;
-	private final ConcurrentHashMap<Beacon, PMovingAverageTD> beaconAverageRssi;
+	private final ConcurrentHashMap<Beacon, ALMovingAverageTD> beaconAverageRssi;
 
 	private final List<RangingRegion> rangedRegions;
 	private final List<MonitoringRegion> monitoredRegions;
@@ -85,7 +82,7 @@ public class BeaconService extends Service {
 		this.leScanCallback = new InternalLeScanCallback();
 
 		this.beaconsFoundInScanCycle = new ConcurrentHashMap<Beacon, Long>();
-		this.beaconAverageRssi = new ConcurrentHashMap<Beacon, PMovingAverageTD>();
+		this.beaconAverageRssi = new ConcurrentHashMap<Beacon, ALMovingAverageTD>();
 
 		this.rangedRegions = new ArrayList<RangingRegion>();
 
@@ -378,11 +375,11 @@ public class BeaconService extends Service {
 				return;
 			}
 
-			if (!BeaconService.this.beaconAverageRssi.contains(beacon)) {
-				BeaconService.this.beaconAverageRssi.put(beacon,
-						new PMovingAverageTD(2.0));
-			}
-			BeaconService.this.beaconAverageRssi.get(beacon).push(
+      if (!BeaconService.this.beaconAverageRssi.containsKey(beacon)) {
+        BeaconService.this.beaconAverageRssi.put(beacon,
+                new ALMovingAverageTD(20.0));
+      }
+      BeaconService.this.beaconAverageRssi.get(beacon).push(
 					System.currentTimeMillis(), rssi);
 
 			BeaconService.this.beaconsFoundInScanCycle.put(beacon,
@@ -521,6 +518,7 @@ public class BeaconService extends Service {
 					rangingResponseMsg.obj = new RangingResult(
 							rangingRegion.region,
 							rangingRegion.getSortedBeacons());
+//          BeaconService.this.beaconAverageRssi.clear();
 					rangingRegion.replyTo.send(rangingResponseMsg);
 				} catch (RemoteException e) {
 					Log.e(TAG, "Error while delivering responses", e);

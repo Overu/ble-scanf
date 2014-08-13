@@ -103,19 +103,41 @@ public class Utils {
 	// }
 
 	public static double computeAccuracy(Beacon beacon) {
-		if (beacon.getRssi() == 0) {
-			return -1.0D;
-		}
+//		if (beacon.getRssi() == 0) {
+//			return -1.0D;
+//		}
+//
+//		double ratio = beacon.getRssi() * 1.0 / beacon.getMeasuredPower();
+//		double rssiCorrection = 0.96D + Math.pow(Math.abs(beacon.getRssi()),
+//				3.0D) % 10.0D / 150.0D;
+//
+//		if (ratio <= 1.0D) {
+//			return Math.pow(ratio, 9.98D) * rssiCorrection;
+//		}
+//		return (0.103D + 0.89978D * Math.pow(ratio, 7.71D)) * rssiCorrection;
+    return calculateDistance(beacon.getMeasuredPower(), beacon.getRssi());
+  }
 
-		double ratio = beacon.getRssi() * 1.0 / beacon.getMeasuredPower();
-		double rssiCorrection = 0.96D + Math.pow(Math.abs(beacon.getRssi()),
-				3.0D) % 10.0D / 150.0D;
+  protected static double calculateDistance(int txPower, double rssi) {
+    if (rssi == 0) {
+      return -1.0; // if we cannot determine accuracy, return -1.
+    }
 
-		if (ratio <= 1.0D) {
-			return Math.pow(ratio, 9.98D) * rssiCorrection;
-		}
-		return (0.103D + 0.89978D * Math.pow(ratio, 7.71D)) * rssiCorrection;
-	}
+//    BeaconManager.logDebug(TAG, "calculating distance based on mRssi of "+rssi+" and txPower of "+txPower);
+
+
+    double ratio = rssi*1.0/txPower;
+    double distance;
+    if (ratio < 1.0) {
+      distance =  Math.pow(ratio,10);
+    }
+    else {
+      distance =  (0.42093)*Math.pow(ratio,6.9476) + 0.54992;
+//      BeaconManager.logDebug(TAG, " avg mRssi: "+rssi+" distance: "+distance);
+    }
+//    BeaconManager.logDebug(TAG, " avg mRssi: "+rssi+" distance: "+distance);
+    return distance;
+  }
 
 	// public static double computeAccuracy(Beacon beacon) {
 	// if (beacon.getRssi() == 0) {

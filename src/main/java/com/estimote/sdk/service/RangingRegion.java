@@ -13,10 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import android.os.Messenger;
 import android.util.Log;
 
-import com.estimote.sdk.Beacon;
-import com.estimote.sdk.PMovingAverageTD;
-import com.estimote.sdk.Region;
-import com.estimote.sdk.Utils;
+import com.estimote.sdk.*;
 
 class RangingRegion {
 	private static final String TAG = (RangingRegion.class.getSimpleName());
@@ -29,7 +26,7 @@ class RangingRegion {
 
 	};
 	private final ConcurrentHashMap<Beacon, Long> beacons;
-	private ConcurrentHashMap<Beacon, PMovingAverageTD> beaconsRssi;
+	private ConcurrentHashMap<Beacon, ALMovingAverageTD> beaconsRssi;
 	final Region region;
 	final Messenger replyTo;
 
@@ -37,7 +34,7 @@ class RangingRegion {
 		this.region = region;
 		this.replyTo = replyTo;
 		this.beacons = new ConcurrentHashMap<Beacon, Long>();
-		this.beaconsRssi = new ConcurrentHashMap<Beacon, PMovingAverageTD>();
+		this.beaconsRssi = new ConcurrentHashMap<Beacon, ALMovingAverageTD>();
 	}
 
 	public final Collection<Beacon> getSortedBeacons() {
@@ -47,12 +44,12 @@ class RangingRegion {
 
 		List<Beacon> averageBeacons = new ArrayList<Beacon>();
 		for (Beacon beacon : sortedBeacons) {
-			if (beaconsRssi.contains(beacon)) {
+			if (beaconsRssi.containsKey(beacon)) {
 				Beacon b = new Beacon(beacon.getProximityUUID(),
 						beacon.getName(), beacon.getMacAddress(),
 						beacon.getMajor(), beacon.getMinor(),
 						beacon.getMeasuredPower(),
-						(int) (beaconsRssi.get(beacon).getAverage()));
+						(int) (RoundDouble.round(0, beaconsRssi.get(beacon).getAverage())));
 				averageBeacons.add(b);
 			} else {
 				averageBeacons.add(beacon);
@@ -64,7 +61,7 @@ class RangingRegion {
 
 	public final void processFoundBeacons(
 			Map<Beacon, Long> beaconsFoundInScanCycle,
-			ConcurrentHashMap<Beacon, PMovingAverageTD> averageRssi) {
+			ConcurrentHashMap<Beacon, ALMovingAverageTD> averageRssi) {
 		beaconsRssi = averageRssi;
 		for (Entry<Beacon, Long> entry : beaconsFoundInScanCycle.entrySet()) {
 			if (Utils.isBeaconInRegion((Beacon) entry.getKey(), this.region)) {

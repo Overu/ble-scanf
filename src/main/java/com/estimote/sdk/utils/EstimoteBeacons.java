@@ -30,8 +30,9 @@ public class EstimoteBeacons {
 	}
 
 	public static boolean isEstimoteBeacon(Beacon beacon) {
-		return (isMacBeacon(beacon)) || (isIOSBeacon(beacon))
-				|| (isOriginalEstimoteUuid(beacon))
-				|| (isValidName(beacon.getName()));
+//		return (isMacBeacon(beacon)) || (isIOSBeacon(beacon))
+//				|| (isOriginalEstimoteUuid(beacon))
+//				|| (isValidName(beacon.getName()));
+    return true;
 	}
 }
